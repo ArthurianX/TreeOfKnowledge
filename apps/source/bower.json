@@ -1,0 +1,21 @@
+{
+  "name": "zamolxian-client",
+  "version": "0.0.1",
+  "dependencies": {
+    "angular": "1.2.15-build.20+sha.d4ac254",
+    "angular-cookie": "latest",
+    "angular-animate": "1.2.15-build.20+sha.d4ac254",
+    "angular-ui-router": "0.2.8-bowratic-tedium",
+    "angular-ui-utils": "~0.0.4",
+    "angular-sanitize": "1.2.15-build.20+sha.d4ac254",
+    "angular-mocks": "1.2.15-build.20+sha.d4ac254",
+    "ionic": "0.9.27"
+  },
+  "devDependencies": {},
+  "resolutions": {
+    "angular": "1.2.15-build.20+sha.d4ac254",
+    "angular-ui-router": "0.2.8-bowratic-tedium",
+    "angular-sanitize": "1.2.15-build.20+sha.d4ac254",
+    "angular-animate": "1.2.15-build.20+sha.d4ac254"
+  }
+}
