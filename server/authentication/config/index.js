@@ -34,7 +34,7 @@ exports.token = {
  */
 exports.db = {
     timeToCheckExpiredTokens: 3600,
-    type: "db",
+    type: "mongodb",
     dbName: "OAuth2orizeRecipeTokens"
 };
 
@@ -50,7 +50,7 @@ exports.db = {
  * dbName - The database name if you're using Mongo
  */
 exports.session = {
-    type: "MemoryStore",
+    type: "MongoStore",
     maxAge: 3600000 * 24 * 7 * 52,
     //TODO You need to change this secret to something that you choose for your secret
     secret: "A Secret That Should Be Changed",

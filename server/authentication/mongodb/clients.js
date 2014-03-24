@@ -19,7 +19,8 @@ var clients = [
         id: '1',
         name: 'Samplr',
         clientId: 'abc123',
-        clientSecret: 'ssh-secret'
+        clientSecret: 'ssh-secret',
+        deviceName: 'Erik\'s iPhone'
     },
     {
         id: '2',

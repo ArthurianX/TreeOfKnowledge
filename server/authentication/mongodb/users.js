@@ -20,6 +20,12 @@ var users = [
         username: 'joe',
         password: 'password',
         name: 'Joe Davis'
+    },
+    {
+        id: '3',
+        username: 'ArthurianX',
+        password: '14759633',
+        name: 'Arthur Kovacs'
     }
 ];
 

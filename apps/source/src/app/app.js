@@ -7,7 +7,7 @@ angular.module('zamolxian', [
         'ionic',
         /*VVV Providers VVV*/
         'zamolxian.authorization',
-        'zamolxian.userinfo',
+        'zamolxian.datasource',
         /*VVV Factories VVV*/
         'zamolxian.globalnotification',
         'zamolxian.usernotification',
@@ -82,6 +82,8 @@ angular.module('zamolxian', [
         $scope.isItemActive = function(item) {
             return $location.path().indexOf(item) > -1;
         };
+
+
 
         $scope.greeting = 'Welcome';
 
