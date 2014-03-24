@@ -1,6 +1,7 @@
 angular.module('zamolxian', [
         'templates-app',
         'templates-common',
+        'zamolxian.fakebackend', //TODO: Remove this when done...
         /*VVV App Config VVV*/
         'zamolxian.config',
         /*VVV Ionic VVV*/
