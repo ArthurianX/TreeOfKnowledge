@@ -78,12 +78,55 @@ angular.module('zamolxian', [
 
     })*/
 
-    .controller('AppCtrl', function AppCtrl($scope, $location, $stateParams) {
+    .controller('AppCtrl', function AppCtrl($scope, $location, $stateParams, $sce, authorization, dataSource) {
         //Get active menu
         $scope.isItemActive = function(item) {
             return $location.path().indexOf(item) > -1;
         };
 
+        /**
+         * Testing data and functions
+         **/
+        //TODO: Build a service after everything works you can call with different parameters to get stuff (iframe, auth, login, data etc.)
+
+
+        //Start the authorization.getAuthCode() listener before the iframe is loaded.
+        function runAuth(){
+            authorization.getAuthCode();
+        }
+        runAuth();
+
+        //$sce - Strict Contextual Escaping
+        //Dummy Registration
+        $scope.doRegistration = function() {
+
+            console.log('DUMMY - doRegistration');
+            //http://deusxmachina.org/dummytok.html
+            $scope.theIframe = '<iframe src="http://deusxmachina.org/dummytok.html" frameborder="0"></iframe>';
+            $scope.insertIframe = function() {
+                return $sce.trustAsHtml($scope.theIframe);
+            };
+
+        };
+
+        //Dummy Login
+        $scope.doLogin = function() {
+            console.log('DUMMY - doLogin');
+
+
+            foursquare.getAllData().then(function(data){})
+
+        };
+
+        $scope.getFirstData = function() {
+            console.log('DUMMY - getFirstData');
+        };
+
+
+
+        /**
+         * Testing data END
+         **/
 
 
         $scope.greeting = 'Welcome';

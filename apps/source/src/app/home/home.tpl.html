@@ -4,6 +4,44 @@
         <div class="homepage" ng-controller="HomeCtrl">
             <p>Swipe to the right to reveal the left menu.</p>
             <p>(On desktop click and drag from left to right)</p>
+
+            <p>
+                <button class="button button-positive" ng-click="doRegistration()">
+                    Start Registration
+                </button>
+            <div ng-bind-html="insertIframe()">
+            </div>
+            </p>
+            <p>
+                <button class="button button-balanced" ng-click="doLogin()">
+                    Login
+                </button>
+            </p>
+            <p>
+                <button class="button button-energized" ng-click="getFirstData()">
+                    Get First Data
+                </button>
+
+            </p>
+<!--
+            <button class="button button-calm">
+                button-calm
+            </button>
+
+
+
+
+            <button class="button button-assertive">
+                button-assertive
+            </button>
+
+            <button class="button button-royal">
+                button-royal
+            </button>
+
+            <button class="button button-dark">
+                button-dark
+            </button>-->
         </div>
     </ion-content>
 </ion-view>

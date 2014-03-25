@@ -83,10 +83,12 @@ angular.module('zamolxian.datasource', ['zamolxian.authorization'])
 
 
         this.$get = function(userData, authorization){
+
             //We are populating the userData value with the ones from localStorage, if present
             if (isUserData) {
                 userData = JSON.parse(window.localStorage.userData);
             }
+
             return new DataSourceService();
         };
     });
