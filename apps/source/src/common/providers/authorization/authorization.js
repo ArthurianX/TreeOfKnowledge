@@ -38,17 +38,25 @@ angular.module('zamolxian.authorization', [])
                 }
 
             };
+
+            this.getFromStorageToServer = function(key) {
+                //Expose the internal AuthStorage Function;
+                return crypto().encryptServer(authStorage().getData(key));
+            };
+
             //Receive Tokens Object from the authorization server and process them.
-            this.getTokens = function(response){
+            this.saveTokens = function(response){
 
                 //The object response body containing all the tokens and types is the response variable
 
-                //Calculate the expiration date.
-                var expiration_date = new Date().getTime() + response.expires_in;
-                // ^^^ If 3600 default is milisecons, is ok, but highly improbable, TODO: multiply expires_in to convert in miliseconds
-                response.expires_on = expiration_date;
+                //TODO: Remember to decrypt the tokens object here, then process
 
-                saveToken(response);
+                //Calculate the expiration date.
+                var expiration_date = new Date().getTime() + response[0].expires_in;
+                // ^^^ If 3600 default is milisecons, is ok, but highly improbable, TODO: multiply expires_in to convert in miliseconds
+                response[0].expires_on = expiration_date;
+
+                authStorage().setData("tokens", response);
             };
 
             this.doTransaction = function(){
@@ -62,12 +70,23 @@ angular.module('zamolxian.authorization', [])
                 }
             };
 
+            this.grantTypePassword = function(username, password){
+                //TODO: User and password will be from the Login Form and parsed encrypted, like below, once the serverside crypto is on.
+                //return crypto().encryptServer('grant_type=password&username=' + username + '&password=' + password + '&scope=offline_access');
+                return 'grant_type=password&username=' + username + '&password=' + password + '&scope=offline_access';
+            };
+
+            this.grantTypeRefreshToken = function(){
+                return 'grant_type=refresh_token&refresh_token=c9pEaQvTXmJKm0CC5Aqu84HHvh2fDvxJ0LwAyf5Gn2IvwWxomK3V66WqAj0EiFBGDIwIQBm5TADAkoXlbuOSl2dEXBNs38k7Cl8G4aqFrJZXkBhpuB4oxGpCLAhndbSSX05cGfq1uNEAk3cRXKK7EHnLnYCJ2J5RfHaQwKVss8YFBrbpYEdODZ0Y0rKzKn0vNW3GSkhqIh7HnypqrKyH3054Qz8omPD9KZD1uBlFFM2aQH88qHMRV2X1zO2u0ViT';
+                //TODO: Make dynamic, give up on doTransaction else statement.
+            };
+
         }
 
-        //Private Functions that help our Constructor.
+        //Private Functions that helps our Constructor.
         var crypto = function(){
 
-            //Options for encryption/decryption come here
+            //Options for encryption/decryption come here.
             //...
 
 
@@ -86,6 +105,12 @@ angular.module('zamolxian.authorization', [])
                 },
                 decrypt: function(data){
                     return window.atob(data); //Base64 Decoding for the masses.
+                },
+                encryptServer: function(data){
+                    return window.btoa(data); //Base64 Encoding for the masses.
+                },
+                decryptServer: function(data){
+                    return window.atob(data); //Base64 Decoding for the masses.
                 }
             };
 
@@ -99,14 +124,11 @@ angular.module('zamolxian.authorization', [])
 
                 //TODO: Decrypt data here and populate the localStorage with each value encrypted.
 
-                //message = JSON.parse(crypto().decrypt('YWJjMTIzOnNzaC1zZWNyZXQ='));//We will use this when we send encrypted messages, not atm, TODO: < read before
+                authStorage().setData("clientID", message.clientId);
+                authStorage().setData("clientSecret", message.clientSecret);
+                authStorage().setData("deviceName", message.deviceName);
 
-
-                authStorage().setData("clientID", crypto().encrypt(message.clientId));
-                authStorage().setData("clientSecret", crypto().encrypt(message.clientSecret));
-                authStorage().setData("deviceName", crypto().encrypt(message.deviceName));
-
-                var concatenatedKeys = crypto().encrypt(message.clientId + ":" + message.clientSecret);
+                var concatenatedKeys = message.clientId + ":" + message.clientSecret;
 
                 authStorage().setData("Authorization", concatenatedKeys);
 
@@ -118,32 +140,43 @@ angular.module('zamolxian.authorization', [])
         };
 
         var authStorage = function(){
+            /**
+             * authStorage will handle the localStorage data storage, everything that passes through it will get encrypted/decrypted, at runtime.
+            **/
 
             //Setter and Getter methods to communicate with localStorage
             //TODO: Create a more advanced handler for storing :)
             return {
                 setData: function(key, data){
-                    return window.localStorage.setItem(key, JSON.stringify(data));
+                    console.log('-------------------------------------------------');
+                    console.log('AuthStorage has set: ' + key + ' with data:');
+                    console.log(data);
+                    console.log('in encrypted form: ');
+                    console.log(crypto().encrypt(JSON.stringify(data)));
+                    console.log('-------------------------------------------------');
+                    return window.localStorage.setItem(key, crypto().encrypt(JSON.stringify(data))); //Encrypt the stringified JSON
                 },
                 getData: function(key){
-                    return JSON.parse(window.localStorage.getItem(key));
+                    console.log('-------------------------------------------------');
+                    console.log('AuthStorage has retrieved: ' + key + ' with data:');
+                    console.log(window.localStorage.getItem(key));
+                    console.log('in decrypted form: ');
+                    console.log(JSON.parse(crypto().decrypt(window.localStorage.getItem(key))));
+                    console.log('-------------------------------------------------');
+                    return JSON.parse(crypto().decrypt(window.localStorage.getItem(key))); //Parse the decrypted string into JSON
                 },
                 checkData: function(key){
-                    return window.localStorage.key(key);
+                    return window.localStorage.getItem(key) !== null;
                 }
             };
 
         };
 
-        var saveToken = function(tokenData){
-            authStorage().setData("tokens", tokenData);
-        };
-
         var refreshToken = function(){
+            //TODO: Remember to decrypt/encrypt
             var tokenData = authStorage().getData("tokens");
             tokenData.access_token = tokenData.refresh_token;
             authStorage().setData("tokens", tokenData);
-
         };
 
         var expirationCheck = function(){

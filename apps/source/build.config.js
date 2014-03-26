@@ -76,8 +76,7 @@ module.exports = {
             'vendor/angular-ui-utils/modules/route/route.js',
             'vendor/angular-sanitize/angular-sanitize.min.js',
             'vendor/ionic/release/js/ionic-angular.js',
-            'vendor/sjcl/sjcl.js',
-            'vendor/angular-mocks/angular-mocks.js' //TODO: REMOVE AT THE END
+            'vendor/sjcl/sjcl.js'
         ],
         css: [
             'vendor/ionic/release/css/ionic.css'

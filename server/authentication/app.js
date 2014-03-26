@@ -48,6 +48,20 @@ app.use(express.cookieParser());
 app.use(express.urlencoded());
 app.use(express.json());
 
+//CORS Configuration
+app.use('/*', function(req, res, next){
+        res.header('Access-Control-Allow-Credentials', true);
+        res.header('Access-Control-Allow-Origin', req.headers.origin);
+        res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+        res.header('Access-Control-Allow-Headers', 'Access-Control-Allow-Origin, Accept, Authorization, Content-Type');
+        if ('OPTIONS' == req.method) {
+            res.send(200);
+        } else {
+            next();
+        }
+
+    }
+);
 //Session Configuration
 app.use(express.session({
     secret: config.session.secret,
