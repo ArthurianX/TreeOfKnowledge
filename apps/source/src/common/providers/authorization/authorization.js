@@ -1,10 +1,10 @@
 angular.module('zamolxian.authorization', [])
 
 /**
- * authorization API ???
+ * authorization API
  **/
 
-    .provider('authorization', function AuthorizationProvider() {
+    .provider('$auth', function $AuthProvider() {
 
         var server_url = "http://deusxmachina.org"; //TODO: Change to server URL
 
@@ -18,12 +18,12 @@ angular.module('zamolxian.authorization', [])
              **/
 
             //get clientID, clientSecret and other details.
-            this.getAuthCode = function() {
+            this.getClientInfo = function() {
 
                 console.log('TESTING - postMessage listener is starting');
 
                 //Add an event listener to messages from the iFrame new account page.
-                window.addEventListener("message", receiveMessage, false);
+                window.addEventListener("message", receiveMessage, false); //TODO: Add the event listener when starting registration process :)
 
                 //Receive the message
                 function receiveMessage(event)
@@ -35,13 +35,23 @@ angular.module('zamolxian.authorization', [])
                     //Send the data response to the process function.
                     processMessage(event.data);
 
+                    //Kill the eventListener
+                    window.removeEventListener("message");
+
                 }
 
             };
 
             this.getFromStorageToServer = function(key) {
+
                 //Expose the internal AuthStorage Function;
-                return crypto().encryptServer(authStorage().getData(key));
+                if (key === 'activeToken') {
+                    //If it's a Bearer request with a token don't encrypt it, at the moment! TODO: < Read before <
+                    return authStorage().getData(key);
+                } else {
+                    return crypto().encryptServer(authStorage().getData(key));
+                }
+
             };
 
             //Receive Tokens Object from the authorization server and process them.
@@ -56,16 +66,17 @@ angular.module('zamolxian.authorization', [])
                 // ^^^ If 3600 default is milisecons, is ok, but highly improbable, TODO: multiply expires_in to convert in miliseconds
                 response[0].expires_on = expiration_date;
 
-                authStorage().setData("tokens", response);
+                authStorage().setData("tokenResponse", response[0]);
+                authStorage().setData("activeToken", response[0].access_token);
             };
 
             this.doTransaction = function(){
-                var tokenData = authStorage().getData("tokens");
+                var tokenData = authStorage().getData("activeToken");
                 if (expirationCheck()) {
                     return tokenData.access_token;   //TODO: Need to format this output with the token AND the auth data to be passed on $http
                 } else {
                     refreshToken();
-                    tokenData = authStorage().getData("tokens");
+                    tokenData = authStorage().getData("tokenResponse");
                     return tokenData.access_token; //TODO: Need to format this output with the token AND the auth data to be passed on $http
                 }
             };
@@ -79,6 +90,21 @@ angular.module('zamolxian.authorization', [])
             this.grantTypeRefreshToken = function(){
                 return 'grant_type=refresh_token&refresh_token=c9pEaQvTXmJKm0CC5Aqu84HHvh2fDvxJ0LwAyf5Gn2IvwWxomK3V66WqAj0EiFBGDIwIQBm5TADAkoXlbuOSl2dEXBNs38k7Cl8G4aqFrJZXkBhpuB4oxGpCLAhndbSSX05cGfq1uNEAk3cRXKK7EHnLnYCJ2J5RfHaQwKVss8YFBrbpYEdODZ0Y0rKzKn0vNW3GSkhqIh7HnypqrKyH3054Qz8omPD9KZD1uBlFFM2aQH88qHMRV2X1zO2u0ViT';
                 //TODO: Make dynamic, give up on doTransaction else statement.
+            };
+
+            //Exposing the whole authStorage function to be used app wide
+            this.storage = function(){
+                return {
+                    set: function(key, data){
+                        authStorage().setData(key, data);
+                    },
+                    get: function(key){
+                        authStorage().getData(key);
+                    },
+                    check: function(key){
+                        authStorage().checkData(key);
+                    }
+                };
             };
 
         }
@@ -130,7 +156,7 @@ angular.module('zamolxian.authorization', [])
 
                 var concatenatedKeys = message.clientId + ":" + message.clientSecret;
 
-                authStorage().setData("Authorization", concatenatedKeys);
+                authStorage().setData("BasicAuthorization", concatenatedKeys);
 
                 console.log('TESTING - processMessage has added all the encrypted values to localStorage');
 
@@ -145,11 +171,11 @@ angular.module('zamolxian.authorization', [])
             **/
 
             //Setter and Getter methods to communicate with localStorage
-            //TODO: Create a more advanced handler for storing :)
+            //TODO: Create a more advanced handler for storing :), maybe leveraging the .config after the localStorage has been read in one session
             return {
                 setData: function(key, data){
                     console.log('-------------------------------------------------');
-                    console.log('AuthStorage has set: ' + key + ' with data:');
+                    console.log('AuthStorage has set: \'' + key + '\' with data:');
                     console.log(data);
                     console.log('in encrypted form: ');
                     console.log(crypto().encrypt(JSON.stringify(data)));
@@ -158,7 +184,7 @@ angular.module('zamolxian.authorization', [])
                 },
                 getData: function(key){
                     console.log('-------------------------------------------------');
-                    console.log('AuthStorage has retrieved: ' + key + ' with data:');
+                    console.log('AuthStorage has retrieved: \'' + key + '\' with data:');
                     console.log(window.localStorage.getItem(key));
                     console.log('in decrypted form: ');
                     console.log(JSON.parse(crypto().decrypt(window.localStorage.getItem(key))));
@@ -173,18 +199,17 @@ angular.module('zamolxian.authorization', [])
         };
 
         var refreshToken = function(){
-            //TODO: Remember to decrypt/encrypt
-            var tokenData = authStorage().getData("tokens");
+            var tokenData = authStorage().getData("tokenResponse");
             tokenData.access_token = tokenData.refresh_token;
-            authStorage().setData("tokens", tokenData);
+            authStorage().setData("tokenResponse", tokenData);
         };
 
         var expirationCheck = function(){
-            if (authStorage().checkData("tokens") !== null) {
-                var tokenData = authStorage().getData("tokens");
+            if (authStorage().checkData("tokenResponse") !== null) {
+                var tokenData = authStorage().getData("tokenResponse");
                 return new Date().getTime() > tokenData.expires_on;
             } else {
-                console.log("expirationCheck, no tokens saved in localStorage");
+                console.log("expirationCheck: no tokens saved in localStorage.");
             }
         };
 

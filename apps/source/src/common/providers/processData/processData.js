@@ -1,4 +1,4 @@
-angular.module('zamolxian.datasource', ['zamolxian.authorization'])
+angular.module('zamolxian.processdata', ['zamolxian.authorization'])
 /**
  * The purpose of this Provider is to run before everything else and provide the application the saved user data from
  * from localStorage, if any, if not, it will leave the 'userData' value as it is. Simplistic, but we need it to have
@@ -6,18 +6,13 @@ angular.module('zamolxian.datasource', ['zamolxian.authorization'])
  *
  **/
 
-
-
-//TODO: Another option would be to start getting new data in this phase ? Don't know yet.
-
-    .provider('dataSource', function DataSourceProvider() {
+    .provider('$processData', function DataSourceProvider() {
         //Here we do all the data manipulation logic? Do we?
 
-        var dummyData = {};
 
-        //Check to see if we have userData in localStorage;
-        var isUserData = window.localStorage.key("userData");
-
+        //Forcefully inject $auth :) to take advantage of the crypto storage TODO: << Better way ?
+        var injector = angular.injector(['zamolxian.authorization']);
+        var $auth = injector.get('$auth');
 
 
         //Creating an all purpose constructor for use outside of this provider.
@@ -42,10 +37,18 @@ angular.module('zamolxian.datasource', ['zamolxian.authorization'])
 
 
 
-            this.getUserData = function(){
+            this.getUserData = function(data){
                 //Here we will fetch the user info from the server and overwrite the localStorage userData on each run.
-                //TODO: Create a case when the user was offline and he made some changes, we need to sync the changes he made while offline to his userData
+                //TODO: Create a case when the user was offline and he made some changes, read some stuff,  we need to sync the changes he made while offline to his server userData :(
 
+                /**
+                 * Regarging the user being offline, I can put up a flag in localStorage with that, and the next time the
+                 * user gets online, we assume that on the server there has been no ACTIVITY change for the said client, so we will push the
+                 * local activity to the server, not the other way around ... SANE ? Synchronization Service?
+                 **/
+
+                userData = data;
+                $auth.storage().set('userData', data);
 
             };
 
@@ -64,6 +67,7 @@ angular.module('zamolxian.datasource', ['zamolxian.authorization'])
             };
 
             //This API method will fetch us the category specific data from the server
+            //TODO: This is deprecated, think of something new. We need to use the fetchService which will combine $auth and $processData
             this.getData = function(localScope){
                 //localScope is the current page from where we are requesting this
                 if (localScope == 'global') {
@@ -82,13 +86,9 @@ angular.module('zamolxian.datasource', ['zamolxian.authorization'])
 
 
 
-        this.$get = function(userData, authorization){
-
-            //We are populating the userData value with the ones from localStorage, if present
-            if (isUserData) {
-                userData = JSON.parse(window.localStorage.userData);
-            }
+        this.$get = function(userData, $auth){
 
             return new DataSourceService();
+
         };
     });

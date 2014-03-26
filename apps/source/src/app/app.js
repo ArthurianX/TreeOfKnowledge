@@ -7,7 +7,7 @@ angular.module('zamolxian', [
         'ionic',
         /*VVV Providers VVV*/
         'zamolxian.authorization',
-        'zamolxian.datasource',
+        'zamolxian.processdata',
         /*VVV Factories VVV*/
         'zamolxian.globalnotification',
         'zamolxian.usernotification',
@@ -89,7 +89,7 @@ angular.module('zamolxian', [
 
      })*/
 
-    .controller('AppCtrl', function AppCtrl($scope, $location, $stateParams, $sce, $window, authorization, dataSource, fetchService /* TESTING, $http*/) {
+    .controller('AppCtrl', function AppCtrl($scope, $location, $stateParams, $sce, $window, $auth, $processData, fetchService /* TESTING, $http*/) {
         //Get active menu
         $scope.isItemActive = function(item) {
             return $location.path().indexOf(item) > -1;
@@ -98,21 +98,15 @@ angular.module('zamolxian', [
         /**
          * Testing data and functions
          **/
-            //TODO: Build a service after everything works you can call with different parameters to get stuff (iframe, auth, login, data etc.)
 
-
-            //Start the authorization.getAuthCode() listener before the iframe is loaded. TODO: Make it conditional.
-        function runAuth(){
-            authorization.getAuthCode();
-        }
-        runAuth();
-
-        //$sce - Strict Contextual Escaping
         //Dummy Registration
         $scope.doRegistration = function() {
-
             console.log('DUMMY - doRegistration');
-            //http://deusxmachina.org/dummytok.html
+
+            //Start the postMessage Event Listener
+            $auth.getClientInfo();
+
+            //Inject the iFrame and parse it as trusted content
             $scope.theIframe = '<iframe src="http://deusxmachina.org/dummytok.html" frameborder="0"></iframe>';
             $scope.insertIframe = function() {
                 return $sce.trustAsHtml($scope.theIframe);
@@ -125,8 +119,20 @@ angular.module('zamolxian', [
             console.log('DUMMY - doLogin');
 
             //Params:  --method--       --url--                        --Authorization Basic/Bearer Token--                                        --data--
-            fetchService('POST', 'https://localhost:3000/oauth/token', authorization.getFromStorageToServer('Authorization'), authorization.grantTypePassword('bob', 'secret')).then(function(data){
-                authorization.saveTokens(data);
+            fetchService('POST', 'https://localhost:3000/oauth/token', $auth.getFromStorageToServer('BasicAuthorization'), $auth.grantTypePassword('bob', 'secret')).then(function(data){
+                $auth.saveTokens(data);
+
+                //TODO: We're simulating basic login here, need to change this A LOT!
+                //TODO: Something like, IF NOT NEW ACCOUNT & LOGIN, THEN OPEN IFRAME TO LOGIN.
+                //Params:  --method--       --url--                        --Authorization Basic/Bearer Token--
+                fetchService('GET', 'https://localhost:3000/api/userinfo', $auth.getFromStorageToServer('activeToken')).then(function(data){
+
+                    $processData.getUserData(data);
+                });
+                //We are assuming that the token is not expired when we're first calling for the user data.
+
+                //TODO: Switch to $auth doTransaction and find a way to ask for a new token when it expires, replacing the current fetchService entirely and putting it in a queue.
+
             });
 
 
@@ -171,6 +177,8 @@ angular.module('zamolxian', [
 
         $scope.getFirstData = function() {
             console.log('DUMMY - getFirstData');
+
+
         };
 
 
@@ -178,6 +186,7 @@ angular.module('zamolxian', [
         /**
          * Testing data END
          **/
+
 
 
         $scope.greeting = 'Welcome';
