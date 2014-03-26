@@ -39,6 +39,18 @@ exports.db = {
 };
 
 /**
+ * JWT Configuration
+ * ????
+ **/
+
+
+exports.jwtconfig = {
+    secret: "La miezul Vienei va cadea o lebada"
+}
+
+
+
+/**
  * Session configuration
  *
  * type - The type of session to use.  MemoryStore for "in-memory",

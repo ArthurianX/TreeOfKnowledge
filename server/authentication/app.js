@@ -8,7 +8,8 @@ var config = require('./config')
     , token = require('./token')
     , https = require('https')
     , fs = require('fs')
-    , path = require('path');
+    , path = require('path')
+    , jwt = require('jwt-simple');
 
 //Pull in the mongo store if we're configured to use it
 //else pull in MemoryStore for the session configuration
