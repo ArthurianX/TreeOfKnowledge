@@ -2,6 +2,12 @@
     <ng-include src="'templates/menubar.tpl.html'"></ng-include>
     <ion-content has-header="true" padding="true">
         <div class="homepage" ng-controller="HomeCtrl">
+
+            <div class="bar bar-subheader">
+                <h2 class="title">You are {{state}}</h2>
+            </div>
+
+
             <p>Swipe to the right to reveal the left menu.</p>
             <p>(On desktop click and drag from left to right)</p>
 

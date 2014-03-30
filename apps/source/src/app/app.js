@@ -13,6 +13,7 @@ angular.module('zamolxian', [
         'zamolxian.usernotification',
         'zamolxian.listingfactory',
         /*VVV Services VVV*/
+        'zamolxian.state',
         'zamolxian.fetcher', //Main data fetcher, we'll feed it with req info from authorization and dataSources
         'zamolxian.achievements',
         'zamolxian.coaching',
@@ -89,15 +90,28 @@ angular.module('zamolxian', [
 
      })*/
 
-    .controller('AppCtrl', function AppCtrl($scope, $location, $stateParams, $sce, $window, $auth, $processData, fetchService /* TESTING, $http*/) {
+    .controller('AppCtrl', function AppCtrl($scope, $location, $sce, $auth, actualState, $processData, fetchService, endPoint) {
         //Get active menu
         $scope.isItemActive = function(item) {
             return $location.path().indexOf(item) > -1;
         };
 
+        $scope.state = " NOT Logged";
+
+        if (actualState.check.local()) {
+            $scope.state = "Logged";
+        } else {
+            $scope.state = " NOT Logged";
+        }
+
+
+
+
+
         /**
          * Testing data and functions
          **/
+
 
         //Dummy Registration
         $scope.doRegistration = function() {
@@ -119,15 +133,16 @@ angular.module('zamolxian', [
             console.log('DUMMY - doLogin');
 
             //Params:  --method--       --url--                        --Authorization Basic/Bearer Token--                                        --data--
-            fetchService('POST', 'https://localhost:3000/oauth/token', $auth.getFromStorageToServer('BasicAuthorization'), $auth.grantTypePassword('bob', 'secret')).then(function(data){
+            fetchService('POST', endPoint.baseURL + endPoint.token, $auth.storage.get('BasicAuthorization'), $auth.grant.password('bob', 'secret')).then(function(data){
                 $auth.saveTokens(data);
 
                 //TODO: We're simulating basic login here, need to change this A LOT!
                 //TODO: Something like, IF NOT NEW ACCOUNT & LOGIN, THEN OPEN IFRAME TO LOGIN.
-                //Params:  --method--       --url--                        --Authorization Basic/Bearer Token--
-                fetchService('GET', 'https://localhost:3000/api/userinfo', $auth.getFromStorageToServer('activeToken')).then(function(data){
+                //Params:  --method--       --url from config js--                        --Authorization Basic/Bearer Token--
+                fetchService('GET', endPoint.baseURL + endPoint.userinfo, $auth.storage.get('activeToken'/*, 'local' || 'server' */)).then(function(data){
 
                     $processData.getUserData(data);
+
                 });
                 //We are assuming that the token is not expired when we're first calling for the user data.
 

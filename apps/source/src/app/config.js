@@ -5,6 +5,7 @@ angular.module('zamolxian.config', [])
      *  use the rest of the data from the selected object
      **/
 
+    //Default user data object, used for comparison and other things
     .value('userData', {
         "id": 12312321,
         "details": {
@@ -183,4 +184,16 @@ angular.module('zamolxian.config', [])
 
         },
         "secret": "PapadiaDeMunte"
-    });
+    })
+
+    //A list of endpoints, all data is taken from here
+    .constant('endPoint', {
+        "baseURL": "https://localhost:3000/",
+        "userinfo": "api/userinfo",
+        "token": "oauth/token",
+        "handshake": "api/client-challenge"
+    })
+
+    //Modify this to set the global Online/Offline Status in the entire application
+    .value('isOnline', false)
+;

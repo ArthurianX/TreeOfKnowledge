@@ -17,7 +17,7 @@ angular.module('zamolxian.authorization', [])
              * AuthorizationService exposed API Methods
              **/
 
-            //get clientID, clientSecret and other details.
+                //get clientID, clientSecret and other details.
             this.getClientInfo = function() {
 
                 console.log('TESTING - postMessage listener is starting');
@@ -38,18 +38,6 @@ angular.module('zamolxian.authorization', [])
                     //Kill the eventListener
                     window.removeEventListener("message");
 
-                }
-
-            };
-
-            this.getFromStorageToServer = function(key) {
-
-                //Expose the internal AuthStorage Function;
-                if (key === 'activeToken') {
-                    //If it's a Bearer request with a token don't encrypt it, at the moment! TODO: < Read before <
-                    return authStorage().getData(key);
-                } else {
-                    return crypto().encryptServer(authStorage().getData(key));
                 }
 
             };
@@ -81,30 +69,46 @@ angular.module('zamolxian.authorization', [])
                 }
             };
 
-            this.grantTypePassword = function(username, password){
-                //TODO: User and password will be from the Login Form and parsed encrypted, like below, once the serverside crypto is on.
-                //return crypto().encryptServer('grant_type=password&username=' + username + '&password=' + password + '&scope=offline_access');
-                return 'grant_type=password&username=' + username + '&password=' + password + '&scope=offline_access';
+            this.grant = {
+                password: function(username, password) {
+                    return 'grant_type=password&username=' + username + '&password=' + password + '&scope=offline_access';
+                },
+                refresh: function(token){
+                    return 'grant_type=refresh_token&refresh_token=' + token;
+                }
             };
 
-            this.grantTypeRefreshToken = function(){
-                return 'grant_type=refresh_token&refresh_token=c9pEaQvTXmJKm0CC5Aqu84HHvh2fDvxJ0LwAyf5Gn2IvwWxomK3V66WqAj0EiFBGDIwIQBm5TADAkoXlbuOSl2dEXBNs38k7Cl8G4aqFrJZXkBhpuB4oxGpCLAhndbSSX05cGfq1uNEAk3cRXKK7EHnLnYCJ2J5RfHaQwKVss8YFBrbpYEdODZ0Y0rKzKn0vNW3GSkhqIh7HnypqrKyH3054Qz8omPD9KZD1uBlFFM2aQH88qHMRV2X1zO2u0ViT';
-                //TODO: Make dynamic, give up on doTransaction else statement.
-            };
-
-            //Exposing the whole authStorage function to be used app wide
-            this.storage = function(){
-                return {
-                    set: function(key, data){
-                        authStorage().setData(key, data);
-                    },
-                    get: function(key){
-                        authStorage().getData(key);
-                    },
-                    check: function(key){
-                        authStorage().checkData(key);
+            //Exposing the whole authStorage function to be used app wide, AWESOME!
+            this.storage = {
+                set: function(key, data){
+                    authStorage().setData(key, data);
+                },
+                get: function(key, method){
+                    /**
+                     * Return the data in a specific encryption, for local usage or server usage
+                     * Usage $auth.storage.get(key, method)
+                     * - method can be local or server.
+                     * */
+                    switch (method) {
+                        case "local":
+                            //Pass encrypted data for local usage
+                            return crypto().encrypt(authStorage().getData(key));
+                        //break;
+                        case "server":
+                            //Pass encrypted data for server usage
+                            return crypto().encryptServer(authStorage().getData(key));
+                        //break;
+                        default:
+                            return authStorage().getData(key);
                     }
-                };
+                },
+                check: function(key){
+                    authStorage().checkData(key);
+                }
+            };
+
+            this.handshake = {
+
             };
 
         }
@@ -168,7 +172,7 @@ angular.module('zamolxian.authorization', [])
         var authStorage = function(){
             /**
              * authStorage will handle the localStorage data storage, everything that passes through it will get encrypted/decrypted, at runtime.
-            **/
+             **/
 
             //Setter and Getter methods to communicate with localStorage
             //TODO: Create a more advanced handler for storing :), maybe leveraging the .config after the localStorage has been read in one session
