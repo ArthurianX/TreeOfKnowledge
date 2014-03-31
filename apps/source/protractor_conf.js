@@ -1,3 +1,7 @@
+//TODO: DO NOT FORGET TO INSTALL THE WEBDRIVER
+// ./node_modules/protractor/bin/webdriver-manager update
+
+
 // An example configuration file.
 exports.config = {
     // Do not start a Selenium Standalone sever - only run this using chrome.
