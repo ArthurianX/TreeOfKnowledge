@@ -186,14 +186,17 @@ angular.module('zamolxian.config', [])
         "secret": "PapadiaDeMunte"
     })
 
-    //A list of endpoints, all data is taken from here
-    .constant('endPoint', {
+
+    //Modify this to set the global Online/Offline Status in the entire application
+    .value('appConfig', {
+        'isOnline': function(){
+            //TODO: Cordova specific code to check for internet connectivity.
+            return true;
+        },
+        //A list of endpoints, all data is taken from here
         "baseURL": "https://localhost:3000/",
         "userinfo": "api/userinfo",
         "token": "oauth/token",
         "handshake": "api/client-challenge"
     })
-
-    //Modify this to set the global Online/Offline Status in the entire application
-    .value('isOnline', false)
 ;

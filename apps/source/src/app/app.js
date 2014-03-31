@@ -90,16 +90,20 @@ angular.module('zamolxian', [
 
      })*/
 
-    .controller('AppCtrl', function AppCtrl($scope, $location, $sce, $auth, actualState, $processData, fetchService, endPoint) {
+    .controller('AppCtrl', function AppCtrl($scope, $location, $sce, $auth, actualState, $processData, fetchService, config) {
         //Get active menu
         $scope.isItemActive = function(item) {
             return $location.path().indexOf(item) > -1;
         };
 
+        //Check logged in status, first local then on server
         $scope.state = " NOT Logged";
 
         if (actualState.check.local()) {
             $scope.state = "Logged";
+
+
+
         } else {
             $scope.state = " NOT Logged";
         }

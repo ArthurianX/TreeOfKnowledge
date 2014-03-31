@@ -10,7 +10,7 @@ angular.module('zamolxian.processdata', ['zamolxian.authorization'])
         //Here we do all the data manipulation logic? Do we?
 
 
-        //Forcefully inject $auth :) to take advantage of the crypto storage TODO: << Better way ?
+        //Forcefully inject $auth :) to take advantage of the crypto storage TODO: << Other Better way ?
         var injector = angular.injector(['zamolxian.authorization']);
         var $auth = injector.get('$auth');
 
