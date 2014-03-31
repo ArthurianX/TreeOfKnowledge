@@ -90,7 +90,7 @@ angular.module('zamolxian', [
 
      })*/
 
-    .controller('AppCtrl', function AppCtrl($scope, $location, $sce, $auth, actualState, $processData, fetchService, config) {
+    .controller('AppCtrl', function AppCtrl($scope, $location, $sce, $auth, actualState, $processData, fetchService, appConfig) {
         //Get active menu
         $scope.isItemActive = function(item) {
             return $location.path().indexOf(item) > -1;
