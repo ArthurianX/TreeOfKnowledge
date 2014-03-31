@@ -90,22 +90,31 @@ angular.module('zamolxian', [
 
      })*/
 
-    .controller('AppCtrl', function AppCtrl($scope, $location, $sce, $auth, actualState, $processData, fetchService, appConfig) {
+    .controller('AppCtrl', function AppCtrl($scope, $location, $sce, $auth, localState, $processData, fetchService, appConfig) {
         //Get active menu
         $scope.isItemActive = function(item) {
             return $location.path().indexOf(item) > -1;
         };
 
+        //Get Registration State
+        var state = localState();
+        console.log(state);
+
+
+
         //Check logged in status, first local then on server
         $scope.state = " NOT Logged";
 
-        if (actualState.check.local()) {
+        if (0 === 0) {
             $scope.state = "Logged";
-
-
-
         } else {
             $scope.state = " NOT Logged";
+        }
+
+        if(appConfig.hasRegistered == 'true') {
+            $scope.registerStatus = 'registered';
+        } else {
+            $scope.registerStatus = 'not registered';
         }
 
 
@@ -157,6 +166,8 @@ angular.module('zamolxian', [
 
             /**
              * For testing purposes, on localhost, for everything to work, I have to:
+             * -1. run mongod in console
+             * 0. run nodemon app.js for the node oauth2 server
              * 1. Open localhost:3000 in browser and accept the https error.
              * 2. Start Chrome from terminal with the flags 'open -a Google\ Chrome --args --disable-web-security'
              * FFS!!!

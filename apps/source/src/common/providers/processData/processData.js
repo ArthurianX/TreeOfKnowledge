@@ -38,6 +38,10 @@ angular.module('zamolxian.processdata', ['zamolxian.authorization'])
 
 
             this.getUserData = function(data){
+
+                console.log('/////////////////////////////////////');
+                console.log('User data has been received');
+                console.log('/////////////////////////////////////');
                 //Here we will fetch the user info from the server and overwrite the localStorage userData on each run.
                 //TODO: Create a case when the user was offline and he made some changes, read some stuff,  we need to sync the changes he made while offline to his server userData :(
 
@@ -47,8 +51,8 @@ angular.module('zamolxian.processdata', ['zamolxian.authorization'])
                  * local activity to the server, not the other way around ... SANE ? Synchronization Service?
                  **/
 
-                userData = data;
-                $auth.storage().set('userData', data);
+
+
 
             };
 

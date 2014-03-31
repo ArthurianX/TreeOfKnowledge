@@ -20,7 +20,7 @@ angular.module('zamolxian.fetcher', [])
              * Content-Type: application/x-www-form-urlencoded
              **/
 
-            if(method === "GET") {
+            if (method === "GET") {
 
                 return $q.all([
                         $http({
@@ -31,15 +31,19 @@ angular.module('zamolxian.fetcher', [])
                                 'Access-Control-Allow-Origin': '*',
                                 'Authorization': 'Bearer ' + headers
                             }
-                        })]).then(function (results) {
+                        })
+                    ]).then(function (results) {
                         var aggregatedData = [];
                         angular.forEach(results, function (result) {
                             aggregatedData = aggregatedData.concat(result.data);
                         });
                         return aggregatedData;
+                    }).catch(function(res){
+                        //console.log(res);
+                        return res;
                     });
 
-            } else if(method === "POST") {
+            } else if (method === "POST") {
 
                 return $q.all([
                         $http({
@@ -51,12 +55,16 @@ angular.module('zamolxian.fetcher', [])
                                 'Authorization': 'Basic ' + headers
                             },
                             data: data
-                        })]).then(function (results) {
+                        })
+                    ]).then(function (results) {
                         var aggregatedData = [];
                         angular.forEach(results, function (result) {
                             aggregatedData = aggregatedData.concat(result.data);
                         });
                         return aggregatedData;
+                    }).catch(function(res){
+                        //console.log(res);
+                        return res;
                     });
             }
 

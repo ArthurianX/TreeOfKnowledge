@@ -19,7 +19,7 @@ angular.module('zamolxian.authorization', [])
 
                 //get clientID, clientSecret and other details.
             this.getClientInfo = function() {
-
+                //TODO: Move this in to the handshake section.
                 console.log('TESTING - postMessage listener is starting');
 
                 //Add an event listener to messages from the iFrame new account page.
@@ -45,6 +45,9 @@ angular.module('zamolxian.authorization', [])
             //Receive Tokens Object from the authorization server and process them.
             this.saveTokens = function(response){
 
+                console.log('SAVE TOKENS BELOW');
+                console.log(response);
+
                 //The object response body containing all the tokens and types is the response variable
 
                 //TODO: Remember to decrypt the tokens object here, then process
@@ -56,17 +59,6 @@ angular.module('zamolxian.authorization', [])
 
                 authStorage().setData("tokenResponse", response[0]);
                 authStorage().setData("activeToken", response[0].access_token);
-            };
-
-            this.doTransaction = function(){
-                var tokenData = authStorage().getData("activeToken");
-                if (expirationCheck()) {
-                    return tokenData.access_token;   //TODO: Need to format this output with the token AND the auth data to be passed on $http
-                } else {
-                    refreshToken();
-                    tokenData = authStorage().getData("tokenResponse");
-                    return tokenData.access_token; //TODO: Need to format this output with the token AND the auth data to be passed on $http
-                }
             };
 
             this.grant = {
@@ -92,24 +84,26 @@ angular.module('zamolxian.authorization', [])
                     switch (method) {
                         case "local":
                             //Pass encrypted data for local usage
+                            console.log('Data encrypted for local usage');
                             return crypto().encrypt(authStorage().getData(key));
                         //break;
                         case "server":
                             //Pass encrypted data for server usage
+                            console.log('Data encrypted for server usage');
                             return crypto().encryptServer(authStorage().getData(key));
                         //break;
                         default:
                             return authStorage().getData(key);
                     }
-                },
-                check: function(key){
-                    authStorage().checkData(key);
                 }
             };
-
-            this.handshake = {
-
+            this.checkData = function(key){
+                return authStorage().checkData(key);
             };
+
+            /*this.handshake = {
+
+            };*/
 
         }
 

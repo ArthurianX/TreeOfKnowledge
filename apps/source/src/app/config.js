@@ -1,4 +1,4 @@
-angular.module('zamolxian.config', [])
+angular.module('zamolxian.config', ['zamolxian.authorization'])
 
     /* The constants here are created as object so we don't pollute the window object with all of them, the module is
      *  included as a normal dependency and we call only the constant we want like myCtrl($scope, userapp) etc where we
@@ -189,14 +189,18 @@ angular.module('zamolxian.config', [])
 
     //Modify this to set the global Online/Offline Status in the entire application
     .value('appConfig', {
+        //Check Network Connectivity
         'isOnline': function(){
             //TODO: Cordova specific code to check for internet connectivity.
-            return true;
+            return navigator.onLine; //Chrome ONLY
         },
+        "hasRegistered": "false",
         //A list of endpoints, all data is taken from here
-        "baseURL": "https://localhost:3000/",
-        "userinfo": "api/userinfo",
-        "token": "oauth/token",
-        "handshake": "api/client-challenge"
+        "endPoint": {
+            "baseURL": "https://localhost:3000/",
+            "userinfo": "api/userinfo",
+            "token": "oauth/token",
+            "handshake": "api/client-challenge"
+        }
     })
 ;
