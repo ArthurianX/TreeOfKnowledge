@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.ionicframework.starter" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>StarterApp</name>
+<widget id="com.treeofknowledge.tok" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>Tree of Knowledge</name>
     <description>
-        A sample Ionic Framework app using Cordova and AngularJS
+        A sample Apache Cordova application that responds to the deviceready event.
     </description>
-    <author email="support@drifty.com" href="http://ionicframework.com/">
-        Ionic Framework Team
+    <author email="dev@cordova.apache.org" href="http://cordova.io">
+        Apache Cordova Team
     </author>
     <content src="index.html" />
     <access origin="*" />

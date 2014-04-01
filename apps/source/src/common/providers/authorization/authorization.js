@@ -45,9 +45,7 @@ angular.module('zamolxian.authorization', [])
             //Receive Tokens Object from the authorization server and process them.
             this.saveTokens = function(response){
 
-                console.log('SAVE TOKENS BELOW');
-                console.log(response);
-
+                console.log('>>>> Saving token response started');
                 //The object response body containing all the tokens and types is the response variable
 
                 //TODO: Remember to decrypt the tokens object here, then process

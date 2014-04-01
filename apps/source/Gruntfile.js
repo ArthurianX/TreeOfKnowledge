@@ -220,7 +220,7 @@ module.exports = function ( grunt ) {
                 files: [
                     {
                         src: [ 'config.xml' ],
-                        dest: '<%= production_dir %>/config.xml',
+                        dest: '<%= production_dir %>/../config.xml',
                         /*cwd: 'config.xml',*/
                         expand: true
                     }

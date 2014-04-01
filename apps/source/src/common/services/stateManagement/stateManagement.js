@@ -110,6 +110,7 @@ angular.module('zamolxian.state', ['zamolxian.authorization','zamolxian.processd
                         tokenProcedure();
 
                     } else {
+                        console.log('Online Check failed, remain at ok-local');
                         //Set Synchronization flag to true if we get here
                         syncroCheck = true;
 
@@ -128,7 +129,7 @@ angular.module('zamolxian.state', ['zamolxian.authorization','zamolxian.processd
                 return 'ok-local';
 
             } else {
-                if ($auth.storage.check('hasRegistered')){
+                if ($auth.checkData('hasRegistered')){
                     return 'login';
                 } else {
                     return 'register'; //With login option, just in case

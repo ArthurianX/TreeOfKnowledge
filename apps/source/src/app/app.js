@@ -51,7 +51,7 @@ angular.module('zamolxian', [
             });
 
         // if none of the above states are matched, use this as the fallback
-        $urlRouterProvider.otherwise('/sidemenu/home');
+        $urlRouterProvider.otherwise('/sidemenu/home/login');
 
 
         //Reset headers to avoid OPTIONS request (aka preflight)
@@ -100,29 +100,28 @@ angular.module('zamolxian', [
         var state = localState();
         console.log(state);
 
+        //TODO: Make the notifications pointer show the status of the login
+         /** - red, for no connection
+         * - yellow, for local OK
+         * - green for server OK
+         * - show appropiate messages on tap for each one, modal maybe ?s
+          * */
 
 
-        //Check logged in status, first local then on server
-        $scope.state = " NOT Logged";
 
-        if (0 === 0) {
-            $scope.state = "Logged";
-        } else {
-            $scope.state = " NOT Logged";
-        }
 
-        if(appConfig.hasRegistered == 'true') {
-            $scope.registerStatus = 'registered';
-        } else {
-            $scope.registerStatus = 'not registered';
-        }
+
+
+
+
+
 
 
 
 
 
         /**
-         * Testing data and functions
+         * Testing data and functions =======================================================
          **/
 
 
@@ -143,25 +142,6 @@ angular.module('zamolxian', [
 
         //Dummy Login
         $scope.doLogin = function() {
-            console.log('DUMMY - doLogin');
-
-            //Params:  --method--       --url--                        --Authorization Basic/Bearer Token--                                        --data--
-            fetchService('POST', endPoint.baseURL + endPoint.token, $auth.storage.get('BasicAuthorization'), $auth.grant.password('bob', 'secret')).then(function(data){
-                $auth.saveTokens(data);
-
-                //TODO: We're simulating basic login here, need to change this A LOT!
-                //TODO: Something like, IF NOT NEW ACCOUNT & LOGIN, THEN OPEN IFRAME TO LOGIN.
-                //Params:  --method--       --url from config js--                        --Authorization Basic/Bearer Token--
-                fetchService('GET', endPoint.baseURL + endPoint.userinfo, $auth.storage.get('activeToken'/*, 'local' || 'server' */)).then(function(data){
-
-                    $processData.getUserData(data);
-
-                });
-                //We are assuming that the token is not expired when we're first calling for the user data.
-
-                //TODO: Switch to $auth doTransaction and find a way to ask for a new token when it expires, replacing the current fetchService entirely and putting it in a queue.
-
-            });
 
 
             /**

@@ -192,7 +192,7 @@ angular.module('zamolxian.config', ['zamolxian.authorization'])
         //Check Network Connectivity
         'isOnline': function(){
             //TODO: Cordova specific code to check for internet connectivity.
-            return navigator.onLine; //Chrome ONLY
+            return false; //Chrome ONLY
         },
         "hasRegistered": "false",
         //A list of endpoints, all data is taken from here
