@@ -66,7 +66,7 @@ angular.module('zamolxian', [
 
     })
 
-    .run(function run($rootScope) {
+    .run(function run($rootScope, localState) {
 
         $rootScope.tellState = function(){
             //Putting it here so it runs only once.
