@@ -67,7 +67,13 @@ angular.module('zamolxian', [
     })
 
     .run(function run($rootScope) {
-        //Set body class for individual route pages.
+
+        $rootScope.tellState = function(){
+            //Putting it here so it runs only once.
+            return localState();
+        };
+
+        //Set body class for individual route pages for granular control.
         $rootScope.$on('$stateChangeSuccess', function (event, currentState) {
             $rootScope.getCurrentLocation = function () {
                 var bodyClass = currentState.name.split('.');
@@ -75,14 +81,10 @@ angular.module('zamolxian', [
                 console.log('We are on the "' + bodyClass[ourClass] + '" page.');
                 return bodyClass[ourClass] + '-page';
             };
-
-
-
-
         });
     })
 
-    .controller('AppCtrl', function AppCtrl($scope, $location, $sce, $auth, localState, $processData, fetchService, appConfig) {
+    .controller('AppCtrl', function AppCtrl($scope, $location, $sce, $auth, $rootScope, localState, $processData, fetchService, appConfig) {
         //Get active menu
         $scope.isItemActive = function(item) {
             return $location.path().indexOf(item) > -1;

@@ -30,14 +30,14 @@ angular.module('zamolxian.home', ['zamolxian.state', 'ionic'])
             ;
     })
 
-    .controller('HomeCtrl', function HomeController($scope, $state, localState) {
+    .controller('HomeCtrl', function HomeController($scope, $rootScope, $state) {
 
         /**
          * ===== FIRST LOGIC =====
          **/
 
         //Redirect the user to the appropriate page.
-        switch (localState()) {
+        switch ($rootScope.tellState()) {
             case "ok-local":
                 $state.transitionTo('sidemenu.home.list');
                 break;
