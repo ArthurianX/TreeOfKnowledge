@@ -1,4 +1,4 @@
-angular.module('zamolxian.home', ['ionic'])
+angular.module('zamolxian.home', ['zamolxian.state', 'ionic'])
 
     .config(function config($stateProvider) {
         $stateProvider
@@ -11,37 +11,55 @@ angular.module('zamolxian.home', ['ionic'])
                     }
                 }
             })
+            .state('sidemenu.home.list', {
+                templateUrl: 'home/home-list.tpl.html'
+                /*,controller: 'HomeCtrl'*/
+            })
             .state('sidemenu.home.login', {
-                url: '/home/login',
-                views: {
-                    'homeView': {
-                        controller: 'HomeCtrl',
-                        templateUrl: 'home/home-login.tpl.html'
-                    }
-                }
+                templateUrl: 'home/home-login.tpl.html'
+                /*,controller: 'HomeCtrl'*/
             })
             .state('sidemenu.home.register', {
-                url: '/home/register',
-                views: {
-                    'homeView': {
-                        controller: 'HomeCtrl',
-                        templateUrl: 'home/home-register.tpl.html'
-                    }
-                }
+                templateUrl: 'home/home-register.tpl.html'
+                /*,controller: 'HomeCtrl'*/
             })
             .state('sidemenu.home.coach', {
-                url: '/home/coach',
-                views: {
-                    'homeView': {
-                        controller: 'HomeCtrl',
-                        templateUrl: 'home/home-coach.tpl.html'
-                    }
-                }
-            });
+                templateUrl: 'home/home-coach.tpl.html'
+                /*,controller: 'HomeCtrl'*/
+            })
+            ;
     })
 
-    .controller('HomeCtrl', function HomeController($scope) {
+    .controller('HomeCtrl', function HomeController($scope, $state, localState) {
 
+        /**
+         * ===== FIRST LOGIC =====
+         **/
+
+        //Redirect the user to the appropriate page.
+        switch (localState()) {
+            case "ok-local":
+                $state.transitionTo('sidemenu.home.list');
+                break;
+            case "register":
+                $state.transitionTo('sidemenu.home.register');
+                break;
+            case "login":
+                $state.transitionTo('sidemenu.home.login');
+                break;
+            case "coach":
+                $state.transitionTo('sidemenu.home.coach');
+                break;
+        }
+
+
+        /**
+         * ===== COACHING =====
+        **/
+        var coachCompleted = function(){
+            //Call this function when coach has been completed or skipped to redirect to register page.
+            $state.transitionTo('sidemenu.home.register');
+        };
     })
 
 ;

@@ -110,7 +110,7 @@ angular.module('zamolxian.state', ['zamolxian.authorization','zamolxian.processd
                         tokenProcedure();
 
                     } else {
-                        console.log('Online Check failed, remain at ok-local');
+                        console.log('Online Check failed, remain at ok-local, SET UP WATCHER');
                         //Set Synchronization flag to true if we get here
                         syncroCheck = true;
 
@@ -132,7 +132,7 @@ angular.module('zamolxian.state', ['zamolxian.authorization','zamolxian.processd
                 if ($auth.checkData('hasRegistered')){
                     return 'login';
                 } else {
-                    return 'register'; //With login option, just in case
+                    return 'coach'; //With login option, just in case
                 }
             }
         };

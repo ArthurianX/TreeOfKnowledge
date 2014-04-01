@@ -51,7 +51,7 @@ angular.module('zamolxian', [
             });
 
         // if none of the above states are matched, use this as the fallback
-        $urlRouterProvider.otherwise('/sidemenu/home/login');
+        $urlRouterProvider.otherwise('/sidemenu/home');
 
 
         //Reset headers to avoid OPTIONS request (aka preflight)
@@ -66,29 +66,21 @@ angular.module('zamolxian', [
 
     })
 
-    /*.config(function myAppConfig($stateProvider, $urlRouterProvider, $locationProvider, $logProvider, $anchorScrollProvider) {
-     $locationProvider.html5Mode(true).hashPrefix('!');
+    .run(function run($rootScope) {
+        //Set body class for individual route pages.
+        $rootScope.$on('$stateChangeSuccess', function (event, currentState) {
+            $rootScope.getCurrentLocation = function () {
+                var bodyClass = currentState.name.split('.');
+                var ourClass = bodyClass.length - 1;
+                console.log('We are on the "' + bodyClass[ourClass] + '" page.');
+                return bodyClass[ourClass] + '-page';
+            };
 
-     $logProvider.debugEnabled(false);
 
-     $urlRouterProvider.otherwise('/home');
 
-     $anchorScrollProvider.disableAutoScrolling();
 
-     })*/
-
-    /*.run(function run($rootScope) {
-     //Set body class for individual route pages.
-     $rootScope.$on('$stateChangeSuccess', function (event, currentState) {
-     $rootScope.getCurrentLocation = function () {
-     return currentState.name + '-page';
-     };
-     if ($rootScope.debugStatus === true) {
-     console.log('We are on the "' + currentState.name + '" page.');
-     }
-     });
-
-     })*/
+        });
+    })
 
     .controller('AppCtrl', function AppCtrl($scope, $location, $sce, $auth, localState, $processData, fetchService, appConfig) {
         //Get active menu
@@ -97,8 +89,8 @@ angular.module('zamolxian', [
         };
 
         //Get Registration State
-        var state = localState();
-        console.log(state);
+        //var state = localState();
+        //console.log(state);
 
         //TODO: Make the notifications pointer show the status of the login
          /** - red, for no connection
