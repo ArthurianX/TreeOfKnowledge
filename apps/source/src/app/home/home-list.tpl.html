@@ -1,8 +1,12 @@
-<ion-view title="{{greeting}}">
+<ion-view title="{{greeting}}" left-buttons="leftButtons">
     <ng-include src="'templates/menubar.tpl.html'"></ng-include>
     <ion-content has-header="true" padding="true">
-        <div class="homepage" ng-controller="HomeCtrl">
+        <div class="homepage" ng-controller="ListCtrl">
             HOME - LIST
         </div>
+
+        <button ng-click="doLogin()">
+            Login
+        </button>
     </ion-content>
 </ion-view>

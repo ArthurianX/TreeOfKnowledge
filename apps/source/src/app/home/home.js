@@ -12,54 +12,126 @@ angular.module('zamolxian.home', ['zamolxian.state', 'ionic'])
                 }
             })
             .state('sidemenu.home.list', {
-                templateUrl: 'home/home-list.tpl.html'
-                /*,controller: 'HomeCtrl'*/
+                url: '/list',
+                templateUrl: 'home/home-list.tpl.html',
+                controller: 'ListCtrl'
             })
             .state('sidemenu.home.login', {
-                templateUrl: 'home/home-login.tpl.html'
-                /*,controller: 'HomeCtrl'*/
+                url: '/login',
+                templateUrl: 'home/home-login.tpl.html',
+                controller: 'LoginCtrl'
             })
             .state('sidemenu.home.register', {
-                templateUrl: 'home/home-register.tpl.html'
-                /*,controller: 'HomeCtrl'*/
+                url: '/register',
+                templateUrl: 'home/home-register.tpl.html',
+                controller: 'RegisterCtrl'
             })
             .state('sidemenu.home.coach', {
-                templateUrl: 'home/home-coach.tpl.html'
-                /*,controller: 'HomeCtrl'*/
+                url: '/coach',
+                templateUrl: 'home/home-coach.tpl.html',
+                controller: 'CoachCtrl'
             })
-            ;
+        ;
     })
 
-    .controller('HomeCtrl', function HomeController($scope, $rootScope, $state) {
+    .run(function($rootScope){
+
+
+    })
+
+    .controller('HomeCtrl', function HomeController($scope, $rootScope, $state, $location, localState) {
+
+        /**
+         * EVENT EMITTERS
+         * @event:auth-loginSuccess - Login has been succesfull, let everybody know.
+         * @event:auth-loginFailed  - Login has failed, do something.
+         * @event:auth-okServer     - Server challenge ok, user is logged in.
+         * @event:auth-okLocal      - Local challenge ok, user appears to be logged in.
+         * @event:auth-login        - Go to login
+         * @event:general-coach     - Start the coach
+         **/
+
 
         /**
          * ===== FIRST LOGIC =====
+         *
+         * redirection and such.
          **/
 
-        //Redirect the user to the appropriate page.
-        switch ($rootScope.tellState()) {
-            case "ok-local":
-                $state.transitionTo('sidemenu.home.list');
-                break;
-            case "register":
-                $state.transitionTo('sidemenu.home.register');
-                break;
-            case "login":
-                $state.transitionTo('sidemenu.home.login');
-                break;
-            case "coach":
-                $state.transitionTo('sidemenu.home.coach');
-                break;
-        }
+        localState.listen('event:auth-okLocal', function(e, data) {
+            //console.log('EVENT: auth-okLocal has been triggered');
+            $state.transitionTo('sidemenu.home.list');
+            //$location.path('/sidemenu/home/list');
+        });
+
+
+        localState.listen('event:auth-login', function(e, data) {
+            //console.log('EVENT: auth-login has been triggered');
+            //$state.transitionTo('sidemenu.home.login');
+            //$location.path('/sidemenu/home/login');
+        });
+
+
+        localState.listen('event:general-coach', function(data) {
+            //console.log('EVENT: general-coach has been triggered');
+            //$state.transitionTo('sidemenu.home.coach');
+            //$location.path('/sidemenu/home/coach');
+        });
+
+
+
+        //After we have all the listeners in place do the checking & broadcasting.
+        localState.check();
+
+
+
+
+
 
 
         /**
          * ===== COACHING =====
-        **/
+         **/
         var coachCompleted = function(){
             //Call this function when coach has been completed or skipped to redirect to register page.
-            $state.transitionTo('sidemenu.home.register');
+            //$state.transitionTo('sidemenu.home.register');
+            $location.path('/sidemenu/home/register');
         };
+
+
+
+        /**
+         * ===== REGISTER =====
+         **/
+
+
+
+        /**
+         * ===== LOGIN =====
+         **/
+
+
+
+        /**
+         * ===== LISTING =====
+         **/
+    })
+
+    .controller('ListCtrl', function ListController($scope, $location, $state, localState) {
+        console.log('Hello from listCtrl');
+        //$state.transitionTo('sidemenu.home.login');
+        $scope.doLogin = function(){
+            $state.transitionTo('sidemenu.home.login');
+        };
+    })
+    .controller('LoginCtrl', function LoginController($scope, $state, localState) {
+        console.log('Hello from loginCtrl');
+    })
+    .controller('RegisterCtrl', function RegisterController($scope, $state, localState) {
+        console.log('Hello from registerCtrl');
+    })
+    .controller('CoachCtrl', function CoachController($scope, $state, localState) {
+        console.log('Hello from coachCtrl');
     })
 
 ;

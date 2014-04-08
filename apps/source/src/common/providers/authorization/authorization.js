@@ -99,9 +99,18 @@ angular.module('zamolxian.authorization', [])
                 return authStorage().checkData(key);
             };
 
-            /*this.handshake = {
+            this.expirationCheck = function(){
+                if (authStorage().checkData("tokenResponse") !== null) {
+                    var tokenData = authStorage().getData("tokenResponse");
+                    return new Date().getTime() > tokenData.expires_on;
+                } else {
+                    console.log("expirationCheck: no tokens saved in localStorage.");
+                }
+            };
 
-            };*/
+            this.handshake = {
+
+            };
 
         }
 
@@ -172,8 +181,8 @@ angular.module('zamolxian.authorization', [])
                 setData: function(key, data){
                     console.log('-------------------------------------------------');
                     console.log('AuthStorage has set: \'' + key + '\' with data:');
-                    console.log(data);
-                    console.log('in encrypted form: ');
+                    //console.log(data);
+                    //console.log('in encrypted form: ');
                     console.log(crypto().encrypt(JSON.stringify(data)));
                     console.log('-------------------------------------------------');
                     return window.localStorage.setItem(key, crypto().encrypt(JSON.stringify(data))); //Encrypt the stringified JSON
@@ -181,8 +190,8 @@ angular.module('zamolxian.authorization', [])
                 getData: function(key){
                     console.log('-------------------------------------------------');
                     console.log('AuthStorage has retrieved: \'' + key + '\' with data:');
-                    console.log(window.localStorage.getItem(key));
-                    console.log('in decrypted form: ');
+                    //console.log(window.localStorage.getItem(key));
+                    //console.log('in decrypted form: ');
                     console.log(JSON.parse(crypto().decrypt(window.localStorage.getItem(key))));
                     console.log('-------------------------------------------------');
                     return JSON.parse(crypto().decrypt(window.localStorage.getItem(key))); //Parse the decrypted string into JSON
@@ -194,20 +203,13 @@ angular.module('zamolxian.authorization', [])
 
         };
 
-        var refreshToken = function(){
+        /*var refreshToken = function(){
             var tokenData = authStorage().getData("tokenResponse");
             tokenData.access_token = tokenData.refresh_token;
             authStorage().setData("tokenResponse", tokenData);
-        };
+        };*/
 
-        var expirationCheck = function(){
-            if (authStorage().checkData("tokenResponse") !== null) {
-                var tokenData = authStorage().getData("tokenResponse");
-                return new Date().getTime() > tokenData.expires_on;
-            } else {
-                console.log("expirationCheck: no tokens saved in localStorage.");
-            }
-        };
+
 
 
         this.$get = function(){

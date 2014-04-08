@@ -66,19 +66,14 @@ angular.module('zamolxian', [
 
     })
 
-    .run(function run($rootScope, localState) {
-
-        $rootScope.tellState = function(){
-            //Putting it here so it runs only once.
-            return localState();
-        };
+    .run(function run($rootScope) {
 
         //Set body class for individual route pages for granular control.
         $rootScope.$on('$stateChangeSuccess', function (event, currentState) {
+
             $rootScope.getCurrentLocation = function () {
                 var bodyClass = currentState.name.split('.');
                 var ourClass = bodyClass.length - 1;
-                console.log('We are on the "' + bodyClass[ourClass] + '" page.');
                 return bodyClass[ourClass] + '-page';
             };
         });
@@ -100,7 +95,7 @@ angular.module('zamolxian', [
          * - green for server OK
          * - show appropiate messages on tap for each one, modal maybe ?s
           * */
-
+        //TASK:
 
 
 
@@ -199,3 +194,15 @@ angular.module('zamolxian', [
 
     })
 ;
+
+
+
+
+
+
+
+
+
+
+
+
